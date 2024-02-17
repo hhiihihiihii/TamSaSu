@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using DesignPattern;
+using Manager;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Type = Manager.Type;
 
 namespace ASTAR {
 
@@ -12,7 +16,7 @@ namespace ASTAR {
     
     private StarNode[,] grid; // [y,x] 그리드
 
-    private AStar pathfinder;
+    public AStar pathfinder;
 
     // for TEST
     private StarNode startNode;
@@ -21,19 +25,24 @@ namespace ASTAR {
     private void Awake() {
         // 초기화
         CreateGrid();
-        /*pathfinder = new AStarPathfind(this);*/
-        AStar.Instance.grid = this;
+        // pathfinder = new AStarPathfind(this);
+        pathfinder = this.transform.AddComponent<AStar>(); 
+        pathfinder.grid = this;
     }
-    private void Start() {
+
+    private void TestCircleSpawn()
+    {
         BoundsInt bounds = walkableMap.cellBounds;
         for (int i = 0; i < bounds.size.y; i++) {
             for (int j = 0; j < bounds.size.x; j++) {
+                
+                // Debug.Log(grid[i, j].gcost +" " +grid[i, j].hcost + " "+grid[i, j].cost + " " + grid[i, j].fcost);
                 GameObject g = Instantiate(mark, new Vector3(grid[i, j].x, grid[i, j].z, 0), Quaternion.identity);
+                
                 print(grid[i, j].isWalkable);
                 g.GetComponent<SpriteRenderer>().sortingOrder = 1000;
 
-                switch (grid[i,j].fcost)
-                {
+                switch (grid[i,j].cost) {
                     case 999999: g.GetComponent<SpriteRenderer>().color = Color.red;  break;
                     case 1: g.GetComponent<SpriteRenderer>().color = Color.blue; break;
                     case 1000: g.GetComponent<SpriteRenderer>().color = Color.green; break;
@@ -43,9 +52,13 @@ namespace ASTAR {
             }
         }
     }
+    private void Start() {
+        if(GameManager.Instance.debugMod) TestCircleSpawn();
+        
+    }
     
-    private void CreateGrid()
-    {
+    private void CreateGrid() {
+        if (walkableMap == null) return;
         walkableMap.CompressBounds();
         BoundsInt bounds = walkableMap.cellBounds;
         grid = new StarNode[bounds.size.y, bounds.size.x]; 
@@ -53,13 +66,15 @@ namespace ASTAR {
         {   
             for (int x = bounds.xMin, j = 0; j < bounds.size.x; x++, j++)
             {
-                StarNode node = new StarNode(walkableMap.CellToWorld(new Vector3Int(x, y)).x + 0.4f, 
-                                            walkableMap.CellToWorld(new Vector3Int(x, y)).y + 0.4f,
-                                            int.MaxValue);
+                StarNode node = new StarNode();
+                                            
                 node.yi = i;
                 node.xi = j;
                 node.parent = null;
-
+                node.gcost = int.MaxValue;
+                node.x = walkableMap.CellToWorld(new Vector3Int(x, y)).x + 0.4f;
+                node.z = walkableMap.CellToWorld(new Vector3Int(x, y)).y + 0.4f;
+                
                 // walkable Tilemap에 타일이 있으면 이동 가능한 노드, 타일이 없으면 이동 불가능한 노드이다.
                 /*                if (walkableMap.HasTile(new Vector3Int(x, y, 0)))
                                 {
@@ -107,15 +122,17 @@ namespace ASTAR {
                         }
 
                         if (sortedArr.Count == 0) continue;
-                        print(sortedArr[0]);
                         switch (sortedArr[0].name)
                         {
                             case "Obstacle": node.cost = 999999; break;
-                            case "Road": node.cost = 1f; break;
-                            case "Base": node.cost = 1000f; break;
-                            default: break;
+                            case "Road": 
+                            case "Base": node.cost = 1; break;
+                            default:
+                                break;
 
                         }
+                        // print(sortedArr[0].name +" "+node.cost);
+
 
                         continue;
                     }
@@ -127,15 +144,7 @@ namespace ASTAR {
 
             }
         }
-        foreach (StarNode node in grid)
-        {
-            if (node.cost != 1)
-            {
-/*                GameObject g = Instantiate(mark, new Vector3(node.xPos, node.yPos, 0), Quaternion.identity);
-                print(node.isWalkable);
-                g.GetComponent<SpriteRenderer>().sortingOrder = 1000;*/
-            }
-        }
+
     }
 
     public void ResetNode()
@@ -149,11 +158,22 @@ namespace ASTAR {
     public StarNode GetNodeFromWorld(Vector3 worldPosition)
     {
         // 월드 좌표로 해당 좌표의 AStarNode 인스턴스를 얻는다.
+        if (walkableMap == null)
+        {
+            GameManager.Instance.consoleManager.ErrorPrint(Type.GAMEMANAGER, "WorldData load fail");
+            return null;
+        }
+        
         Vector3Int cellPos = walkableMap.WorldToCell(worldPosition);
         int y = cellPos.y + Mathf.Abs(walkableMap.cellBounds.yMin);
         int x = cellPos.x + Mathf.Abs(walkableMap.cellBounds.xMin);
+        if (y >= grid.GetLength(0) || x >= grid.GetLength(1) || 0 > x || 0 > y)
+        {
+            GameManager.Instance.consoleManager.ErrorPrint(Type.GAMEMANAGER, "Player position is not valid");
 
-        if (y >= grid.GetLength(0) || x >= grid.GetLength(1)) return null;
+            return null;
+        }
+
         StarNode node = grid[y, x];
         return node;
     }
