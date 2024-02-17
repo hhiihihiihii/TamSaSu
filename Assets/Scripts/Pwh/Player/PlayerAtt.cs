@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Entity
-{
-    public class PlayerAtt
-    {
+namespace Player {
+    public class PlayerAtt {
         public bool Attack()
         {
             Debug.Log("ht");

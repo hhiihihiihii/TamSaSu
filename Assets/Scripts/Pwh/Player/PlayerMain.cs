@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entity;
 
-public class PlayerMain :PlayerMainValue
-{
+public class PlayerMain :PlayerMainValue {
     private int _hp;
 
     public void Start()
@@ -41,6 +40,6 @@ public class PlayerMain :PlayerMainValue
     {
         if (_hp > 0) return;
 
-        //Á×´Â ¾Ö´Ï¸ÞÀÌ¼Ç
+        //ï¿½×´ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
     }
 }

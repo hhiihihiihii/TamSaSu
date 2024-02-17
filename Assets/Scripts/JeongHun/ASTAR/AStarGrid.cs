@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD:Assets/JeongHun/Scripts/ASTAR/AStarGrid.cs
 using DesignPattern;
 using Manager;
 using Unity.VisualScripting;
-=======
-using DisgendPattern;
->>>>>>> origin/pwh:Assets/Scripts/JeongHun/ASTAR/AStarGrid.cs
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Type = Manager.Type;

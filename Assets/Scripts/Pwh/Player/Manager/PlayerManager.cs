@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DisgendPattern;
+using DesignPattern;
 
 public class PlayerManager : SingleTon<PlayerManager>
 {
@@ -34,6 +34,6 @@ public class PlayerManager : SingleTon<PlayerManager>
     {
         if (!_pMain._isAtt) return;
 
-        //Àû hp ÇÔ¼ö »ç¿ë
+        //ï¿½ï¿½ hp ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½
     }
 }

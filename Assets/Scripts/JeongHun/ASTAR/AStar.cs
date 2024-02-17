@@ -1,12 +1,7 @@
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
-<<<<<<< HEAD:Assets/JeongHun/Scripts/ASTAR/AStar.cs
-using DesignPattern;
 using Manager;
-=======
-using DisgendPattern;
->>>>>>> origin/pwh:Assets/Scripts/JeongHun/ASTAR/AStar.cs
 using UnityEngine;
 using Type = Manager.Type;
 
