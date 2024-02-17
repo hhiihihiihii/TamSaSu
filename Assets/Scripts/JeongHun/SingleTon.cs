@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DesignPattern {
+namespace DisgendPattern {
     public class SingleTon<T> : MonoBehaviour where T : MonoBehaviour {
 
         private static T _instance;
