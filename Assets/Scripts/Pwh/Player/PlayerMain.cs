@@ -20,7 +20,6 @@ public class PlayerMain :PlayerMainValue
 
     public bool Attack()
     {
-        Debug.Log("ht");
         return Input.GetMouseButtonDown(0);
     }
 
