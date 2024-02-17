@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entity;
 
-public class PlayerMain :PlayerMainValue
+public class PlayerMain : PlayerMainValue
 {
     private int _hp;
 
@@ -15,21 +15,15 @@ public class PlayerMain :PlayerMainValue
     public void Update()
     {
         _direction = Move();
-        _isAtt = Attack();
-    }
-
-    public bool Attack()
-    {
-        return Input.GetMouseButtonDown(0);
     }
 
     public Vector2 Move()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
 
         Vector2 dir = new Vector2(x, y).normalized;
-        return dir * _base.speed * Time.deltaTime;
+        return dir * _base.speed;
     }
 
     public void DecHp(int value)
